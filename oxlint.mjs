@@ -25,11 +25,15 @@ export default {
     "import/extensions": ["error", "ignorePackages", { ts: "always", tsx: "always" }],
     "import/no-default-export": "error",
 
-    // Pedantic rules that every adopting project turned off.
+    // Pedantic rules that adopting projects turned off.
     "eslint/max-lines": "off",
     "eslint/max-lines-per-function": "off",
     "eslint/no-await-in-loop": "off",
     "import/max-dependencies": "off",
+    // Conflicts with unicorn/no-useless-undefined; tsconfig noImplicitReturns covers missing returns.
+    "typescript/consistent-return": "off",
+    // Deep readonly across inferred schema and API parameters is not a blanket convention.
+    "typescript/prefer-readonly-parameter-types": "off",
   },
   overrides: [
     {

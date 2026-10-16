@@ -1,6 +1,6 @@
 {
   "name": "@hyunmin/canon",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Shared TypeScript, Oxlint, and Oxfmt configuration for personal Bun projects.",
   "type": "module",
   "files": ["AGENTS.md", "bin", "oxlint.mjs", "oxlint.d.mts", "oxfmt.mjs", "oxfmt.d.mts", "tsconfig.json", "typescript.md", "skill"],
