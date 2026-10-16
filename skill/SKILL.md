@@ -14,6 +14,7 @@ tags and each project pins one.
 bun init -y
 bun add -d github:hyunmindev/canon#<tag> oxlint oxlint-tsgolint oxfmt typescript @types/bun
 bunx canon init --force   # replaces bun init's tsconfig.json
+bun run fmt               # init output is not pre-sorted
 ```
 
 `bun init` also writes a CLAUDE.md. While any CLAUDE.md exists, Claude Code skips
