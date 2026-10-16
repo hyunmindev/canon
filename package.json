@@ -1,0 +1,20 @@
+{
+  "name": "@hyunmin/canon",
+  "version": "0.1.0",
+  "description": "Shared TypeScript, Oxlint, and Oxfmt configuration for personal Bun projects.",
+  "type": "module",
+  "files": ["AGENTS.md", "bin", "oxlint.mjs", "oxlint.d.mts", "oxfmt.mjs", "oxfmt.d.mts", "tsconfig.json", "typescript.md", "skill"],
+  "bin": { "canon": "./bin/canon.mjs" },
+  "exports": {
+    "./tsconfig.json": "./tsconfig.json",
+    "./oxlint": { "types": "./oxlint.d.mts", "default": "./oxlint.mjs" },
+    "./oxfmt": { "types": "./oxfmt.d.mts", "default": "./oxfmt.mjs" },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "oxfmt": ">=0.70.0",
+    "oxlint": ">=1.85.0",
+    "oxlint-tsgolint": ">=7.0.2002",
+    "typescript": ">=7.0.2"
+  }
+}
