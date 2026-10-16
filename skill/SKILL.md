@@ -36,5 +36,6 @@ the import; other agents follow the path.
 ## Updating canon
 
 Commit and tag canon, then in each adopting repository
-(`grep -l @hyunmin/canon ~/Workspaces/*/package.json`) bump the tag, `bun install`, run
-its own verification, and commit.
+(`grep -l @hyunmin/canon ~/Workspaces/*/package.json`) edit the tag in package.json and
+run `bun install` (`bun add` with a new git tag fails with DependencyLoop). Remove any
+project override the new canon now provides, run the project's verification, and commit.
