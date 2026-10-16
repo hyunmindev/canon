@@ -5,14 +5,14 @@ description: Set up, adopt, or update @hyunmin/canon, the shared tsconfig, Oxlin
 
 # canon
 
-Source: `git@github.com:hyunmindev/canon.git` (private; installs need GitHub SSH access), local checkout `~/Workspaces/canon`. Releases are git
+Source: `github:hyunmindev/canon`, local checkout `~/Workspaces/canon`. Releases are git
 tags and each project pins one.
 
 ## New project
 
 ```bash
 bun init -y
-bun add -d "git+ssh://git@github.com/hyunmindev/canon.git#<tag>" oxlint oxlint-tsgolint oxfmt typescript @types/bun
+bun add -d github:hyunmindev/canon#<tag> oxlint oxlint-tsgolint oxfmt typescript @types/bun
 bunx canon init --force   # replaces bun init's tsconfig.json
 ```
 
