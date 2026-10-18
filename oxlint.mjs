@@ -75,6 +75,11 @@ export default {
     "typescript/consistent-return": "off",
     // Deep readonly across inferred schema and API parameters is not a blanket convention.
     "typescript/prefer-readonly-parameter-types": "off",
+    // Untyped: flags BigNumber/Decimal toFixed(), where no argument means the exact value.
+    "unicorn/require-number-to-fixed-digits-argument": "off",
+    // Duplicates of typescript/require-await and unicorn/no-negated-condition.
+    "eslint/require-await": "off",
+    "eslint/no-negated-condition": "off",
   },
   overrides: [
     {
