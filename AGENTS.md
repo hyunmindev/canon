@@ -6,8 +6,9 @@ skill in `skill/` (linked from `~/.agents/skills/canon` and `~/.claude/skills/ca
 
 - Never name or special-case an adopting project here. A project-specific need belongs in
   that project's own config or AGENTS.md.
-- Only write rules a current model would not follow by default; delete anything the
-  configs already enforce.
+- Prefer a check over prose. Write only rules a current model would not follow by
+  default, and delete anything the configs enforce or a stronger model would no longer
+  need.
 - Configs ship as `.mjs` plus `.d.mts`, not `.ts`: they are loaded from `node_modules`.
 - Verify a change by packing (`bun pm pack`) and installing into a scratch project, then
   tag a release. Adopting repositories update by bumping their pinned tag.

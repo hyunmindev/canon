@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import canonLint from "../oxlint.mjs";
 
 const files = {
   "tsconfig.json": `{
@@ -31,6 +34,61 @@ const scripts = {
   "fmt:check": "oxfmt --check",
 };
 
+// TypeScript 7 defaults, or implied by canon's verbatimModuleSyntax and strict.
+const implied = {
+  esModuleInterop: true,
+  forceConsistentCasingInFileNames: true,
+  isolatedModules: true,
+  noPropertyAccessFromIndexSignature: false,
+  noUncheckedSideEffectImports: true,
+  useUnknownInCatchVariables: true,
+};
+// Reported twice when also on in tsconfig: oxlint's no-unused-vars covers both.
+const overlapping = ["noUnusedLocals", "noUnusedParameters"];
+
+const canonTsconfig = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../tsconfig.json"), "utf8"),
+);
+
+/** Strips comments and trailing commas so tsconfig-style JSONC parses. */
+function parseJsonc(text) {
+  const stripped = text.replaceAll(/("(?:\\.|[^"\\])*")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (_, string) => string ?? "");
+  return JSON.parse(stripped.replaceAll(/,(\s*[}\]])/g, "$1"));
+}
+
+const same = (a, b) => a !== undefined && JSON.stringify(a).toLowerCase() === JSON.stringify(b).toLowerCase();
+
+function reportTsconfig(root) {
+  const path = join(root, "tsconfig.json");
+  if (!existsSync(path)) {
+    return;
+  }
+  const options = parseJsonc(readFileSync(path, "utf8")).compilerOptions ?? {};
+  for (const [name, value] of Object.entries(options)) {
+    if (same(canonTsconfig.compilerOptions[name], value)) {
+      console.log(`extra  tsconfig ${name} (canon sets the same value)`);
+    } else if (name in implied && implied[name] === value) {
+      console.log(`extra  tsconfig ${name} (already the effective value)`);
+    } else if (overlapping.includes(name) && value === true) {
+      console.log(`extra  tsconfig ${name} (oxlint no-unused-vars already reports it)`);
+    }
+  }
+}
+
+function reportOxlint(root) {
+  const path = join(root, "oxlint.config.ts");
+  if (!existsSync(path)) {
+    return;
+  }
+  const text = readFileSync(path, "utf8");
+  const bare = (rule) => rule.replace(/^eslint\//, "");
+  for (const rule of Object.keys(canonLint.rules)) {
+    if (new RegExp(`["']((eslint/)?${bare(rule)})["']\\s*:`).test(text)) {
+      console.log(`extra  oxlint ${rule} (canon sets it; drop unless the project deliberately differs)`);
+    }
+  }
+}
+
 const replaced = [".oxlintrc.json", ".oxlintrc.jsonc", ".oxfmtrc.json", ".oxfmtrc.jsonc", "biome.json", "biome.jsonc"];
 
 function init(root, force) {
@@ -56,6 +114,9 @@ function init(root, force) {
     }
   }
   writeFileSync(manifestPath, `${JSON.stringify(manifest, undefined, 2)}\n`);
+
+  reportTsconfig(root);
+  reportOxlint(root);
 
   for (const name of replaced.filter((file) => existsSync(join(root, file)))) {
     console.log(`legacy ${name} (fold project-specific settings into the canon config, then delete)`);

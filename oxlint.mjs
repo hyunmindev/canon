@@ -24,12 +24,16 @@ export default {
     "typescript/switch-exhaustiveness-check": "error",
     "import/extensions": ["error", "ignorePackages", { ts: "always", tsx: "always" }],
     "import/no-default-export": "error",
+    "eslint/prefer-const": "error",
 
-    // Pedantic rules that adopting projects turned off.
+    // Size and shape limits second-guess a capable model's own judgment.
+    "eslint/max-classes-per-file": "off",
     "eslint/max-lines": "off",
     "eslint/max-lines-per-function": "off",
     "eslint/no-await-in-loop": "off",
     "import/max-dependencies": "off",
+    // Spreading a record inside map is the immutable update the codebase wants.
+    "oxc/no-map-spread": "off",
     // Conflicts with unicorn/no-useless-undefined; tsconfig noImplicitReturns covers missing returns.
     "typescript/consistent-return": "off",
     // Deep readonly across inferred schema and API parameters is not a blanket convention.
