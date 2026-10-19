@@ -25,6 +25,9 @@ the import; other agents follow the path.
 
 ## Existing repository
 
+- Knip reports the perfectionist plugin that canon's oxlint config loads as unlisted; add
+  `eslint-plugin-perfectionist` to knip's `ignoreDependencies`.
+
 - Type-aware rules need TypeScript 7. Upgrade first. A framework that type-checks through
   the TypeScript JS API at build time (Next.js) must be verified on 7 before switching.
 - `canon init` never overwrites. Fold the project's real differences (framework plugins,
