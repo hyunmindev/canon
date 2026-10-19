@@ -1,6 +1,15 @@
-/** Shared Oxlint baseline. Spread it into a project's oxlint.config.ts; `extends` drops categories and options. */
+import { fileURLToPath } from "node:url";
+
+import perfectionist from "eslint-plugin-perfectionist";
+
+/**
+ * Shared Oxlint baseline. Spread it into a project's oxlint.config.ts: `extends` does not carry `env`,
+ * `globals`, or `ignorePatterns`, and its option merging is undocumented.
+ */
 export default {
   plugins: ["typescript", "unicorn", "oxc", "import", "promise"],
+  // Resolved here so adopting projects need not install the plugin themselves.
+  jsPlugins: [fileURLToPath(import.meta.resolve("eslint-plugin-perfectionist"))],
   categories: {
     correctness: "error",
     suspicious: "error",
@@ -12,6 +21,9 @@ export default {
     reportUnusedDisableDirectives: "error",
   },
   rules: {
+    // All ordering (imports, keys, types, members) belongs to perfectionist; oxfmt does not sort imports.
+    ...perfectionist.configs["recommended-natural"].rules,
+
     "typescript/no-unsafe-type-assertion": "error",
     "typescript/consistent-type-assertions": [
       "error",
@@ -49,8 +61,6 @@ export default {
     "eslint/prefer-regex-literals": "error",
     "eslint/prefer-rest-params": "error",
     "eslint/prefer-template": "error",
-    // Autofix reorders keys; suppress it where key order is serialized output.
-    "eslint/sort-keys": ["error", "asc", { caseSensitive: false, natural: true }],
     "typescript/adjacent-overload-signatures": "error",
     "typescript/consistent-type-imports": "error",
     "typescript/no-array-constructor": "error",
@@ -71,8 +81,10 @@ export default {
     "import/max-dependencies": "off",
     // Spreading a record inside map is the immutable update the codebase wants.
     "oxc/no-map-spread": "off",
-    // Conflicts with unicorn/no-useless-undefined; tsconfig noImplicitReturns covers missing returns.
+    // The rule's own docs defer to tsconfig noImplicitReturns, which canon sets.
     "typescript/consistent-return": "off",
+    // Bans the bare `return;` that noImplicitReturns needs once unicorn/no-useless-undefined forbids `return undefined`.
+    "eslint/no-useless-return": "off",
     // Deep readonly across inferred schema and API parameters is not a blanket convention.
     "typescript/prefer-readonly-parameter-types": "off",
     // Untyped: flags BigNumber/Decimal toFixed(), where no argument means the exact value.
@@ -83,8 +95,21 @@ export default {
   },
   overrides: [
     {
-      files: ["*.config.{ts,mts,js,mjs}", "**/*.config.{ts,mts,js,mjs}"],
+      files: ["**/*.config.{ts,mts,js,mjs}"],
       rules: { "import/no-default-export": "off" },
+    },
+    {
+      files: ["**/*.test.{ts,tsx}", "**/tests/**", "**/__tests__/**"],
+      rules: {
+        // bun-types declares `expect(p).rejects/resolves` matchers as void (oven-sh/bun#23420).
+        "typescript/await-thenable": "off",
+        "typescript/no-confusing-void-expression": "off",
+        // Asymmetric matchers such as expect.any() are typed any.
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        // Fakes are async to satisfy Promise-typed ports without awaiting.
+        "typescript/require-await": "off",
+      },
     },
   ],
 };

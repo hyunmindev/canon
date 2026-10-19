@@ -12,7 +12,8 @@ tags and each project pins one.
 
 ```bash
 bun init -y
-bun add -d github:hyunmindev/canon#<tag> oxlint oxlint-tsgolint oxfmt typescript @types/bun
+bun add -d github:hyunmindev/canon#<tag> oxlint oxlint-tsgolint typescript @types/bun
+bun add -d --exact oxfmt     # formatter output changes between releases
 bunx canon init --force   # replaces bun init's tsconfig.json
 bun run fmt               # init output is not pre-sorted
 ```
@@ -38,4 +39,5 @@ the import; other agents follow the path.
 Commit and tag canon, then in each adopting repository
 (`grep -l @hyunmin/canon ~/Workspaces/*/package.json`) edit the tag in package.json and
 run `bun install` (`bun add` with a new git tag fails with DependencyLoop). Remove any
-project override the new canon now provides, run the project's verification, and commit.
+project override the new canon now provides, run the project's verification, and commit. Bump oxfmt in its own commit together
+with `bun run fmt`.
